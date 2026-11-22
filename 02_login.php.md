@@ -62,9 +62,12 @@ $stmt = $conexion->prepare("SELECT id_usuario, nombre, usuario, password FROM us
 $stmt->execute([$usuario]);
 $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 ```
+* **PDO**(PHP Data Objects): Es la clase nativa de PHP que sirve para conectarse e interactuar de forma segura con bases de datos (como MySQL).
 * **Consultas Preparadas (`prepare` y `execute`)**: En lugar de concatenar el texto del usuario directamente en la consulta, se utiliza un marcador `?`. Esto **bloquea cualquier intento de inyección SQL (SQL Injection)**, ya que el motor de la base de datos trata el dato estrictamente como texto y no como código ejecutable.
 * **`fetch(PDO::FETCH_ASSOC)`**: Obtiene la fila encontrada del usuario como un arreglo asociativo con los nombres de las columnas.
 * **`$stmt (Statement / Sentencia)`**: Es una variable (por convención) que guarda la consulta SQL ya preparada y ejecutada por PDO (por ejemplo: SELECT * FROM usuarios WHERE usuario = ?).
+* **`PDO::FETCH_ASSOC`**:Es una constante que le indica a PDO cómo devolver los datos obtenidos. Hace que el resultado llegue como un array asociativo, donde las claves son los nombres exactos de las columnas de tu tabla (ej. $fila["nombre"]).
+* **`$fila**`:: Es la variable donde se guarda el registro (la fila de la base de datos) extraído mediante $stmt->fetch(PDO::FETCH_ASSOC). Si encuentra al usuario, será un array con sus datos; si no, valdrá false.
 
 ---
 
