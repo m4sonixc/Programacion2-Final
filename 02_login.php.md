@@ -64,6 +64,7 @@ $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 ```
 * **Consultas Preparadas (`prepare` y `execute`)**: En lugar de concatenar el texto del usuario directamente en la consulta, se utiliza un marcador `?`. Esto **bloquea cualquier intento de inyección SQL (SQL Injection)**, ya que el motor de la base de datos trata el dato estrictamente como texto y no como código ejecutable.
 * **`fetch(PDO::FETCH_ASSOC)`**: Obtiene la fila encontrada del usuario como un arreglo asociativo con los nombres de las columnas.
+* **`$stmt (Statement / Sentencia)`**: Es una variable (por convención) que guarda la consulta SQL ya preparada y ejecutada por PDO (por ejemplo: SELECT * FROM usuarios WHERE usuario = ?).
 
 ---
 
