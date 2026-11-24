@@ -50,9 +50,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = trim($_POST["usuario"] ?? "");
     $password = $_POST["password"] ?? "";
 ```
-* Comprueba si el usuario envió el formulario mediante el método **POST**.
-* **`trim(...)`**: Quita espacios en blanco accidentales al inicio y al final del usuario.
-* **`?? ""` (Operador de fusión por null)**: Si no se envió el dato, asigna un texto vacío en lugar de generar una advertencia de PHP.
+Este bloque captura y prepara los datos enviados desde el formulario HTML antes de consultarlos en la base de datos:
+
+1. **Verificación del método (`$_SERVER["REQUEST_METHOD"] == "POST"`):** Comprueba que la petición haya sido enviada mediante el método `POST` (es decir, que el usuario haya presionado el botón de enviar en el formulario) y no por una carga normal de página (`GET`).
+2. **Captura y limpieza del usuario (`trim($_POST["usuario"] ?? "")`):** Obtiene el valor ingresado en el campo `usuario` y aplica `trim()` para eliminar espacios en blanco accidentales al inicio o al final. El operador de fusión de null (`?? ""`) asigna una cadena vacía si el campo no fue enviado, evitando errores de índice indefinido.
+3. **Captura de la contraseña (`$_POST["password"] ?? ""`):** Recupera la contraseña tal cual fue escrita, asignando una cadena vacía por defecto si no existe. No se aplica `trim()` para respetar si el usuario incluyó espacios intencionalmente en su clave.
 
 ---
 
