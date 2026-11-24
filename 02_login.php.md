@@ -64,13 +64,20 @@ $stmt = $conexion->prepare("SELECT id_usuario, nombre, usuario, password FROM us
 $stmt->execute([$usuario]);
 $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 ```
-* **PDO**(PHP Data Objects): Es la clase nativa de PHP que sirve para conectarse e interactuar de forma segura con bases de datos (como MySQL).
-* **Consultas Preparadas (`prepare` y `execute`)**: En lugar de concatenar el texto del usuario directamente en la consulta, se utiliza un marcador `?`. Esto **bloquea cualquier intento de inyección SQL (SQL Injection)**, ya que el motor de la base de datos trata el dato estrictamente como texto y no como código ejecutable.
-* **`fetch(PDO::FETCH_ASSOC)`**: Obtiene la fila encontrada del usuario como un arreglo asociativo con los nombres de las columnas.
-* **`$stmt (Statement / Sentencia)`**: Es una variable (por convención) que guarda la consulta SQL ya preparada y ejecutada por PDO (por ejemplo: SELECT * FROM usuarios WHERE usuario = ?).
-* **`PDO::FETCH_ASSOC`**:Es una constante que le indica a PDO cómo devolver los datos obtenidos. Hace que el resultado llegue como un array asociativo, donde las claves son los nombres exactos de las columnas de tu tabla (ej. $fila["nombre"]).
-* **`$fila**`:: Es la variable donde se guarda el registro (la fila de la base de datos) extraído mediante $stmt->fetch(PDO::FETCH_ASSOC). Si encuentra al usuario, será un array con sus datos; si no, valdrá false.
+* **`PDO` (PHP Data Objects):** Extensión nativa de PHP utilizada para conectarse y operar con bases de datos de forma segura, permitiendo el uso de consultas preparadas para prevenir inyecciones SQL.
+* **`$stmt` (Statement / Sentencia):** Variable que almacena el objeto de la consulta SQL preparada (`PDOStatement`). Actúa como intermediario entre PHP y la base de datos: primero guarda la estructura de la consulta, luego la ejecuta con los datos reales y finalmente permite extraer los resultados.
+* **`PDO::FETCH_ASSOC`:** Modo de extracción que le indica a PDO que devuelva el resultado como un **array asociativo**, utilizando los nombres de las columnas de la tabla (`id_usuario`, `nombre`, `usuario`, `password`) como claves.
+* **`$fila`:** Variable que guarda el registro extraído de la base de datos. Si el usuario existe, contiene un arreglo con sus datos; si no hay coincidencias, devuelve `false`.
 
+---
+
+### Consulta Preparada y Obtención de Datos
+
+Antes de validar las credenciales, el sistema busca al usuario en la base de datos en tres pasos:
+
+1. **Preparación (`$conexion->prepare(...)`):** Crea la plantilla de la consulta `SELECT` y la guarda en `$stmt`. El signo de interrogación (`?`) funciona como un **marcador de posición (placeholder)** que reserva el lugar donde irá el dato del usuario, evitando que cualquier texto malicioso altere la consulta SQL.
+2. **Ejecución (`$stmt->execute([$usuario])`):** Envía el valor real de `$usuario` para reemplazar al signo `?` y ejecuta la consulta de forma segura en el motor de base de datos.
+3. **Extracción (`$stmt->fetch(PDO::FETCH_ASSOC)`):** Recupera la primera fila coincidente desde `$stmt` en formato de array asociativo y la almacena en `$fila`.
 ---
 
 ### E. Comprobación de Contraseña y Creación de Sesión
