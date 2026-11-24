@@ -54,6 +54,10 @@ Esta sección establece el enlace entre la aplicación PHP y el servidor MySQL d
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $conexion->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 ```
+### (`setAttribute`)
+El método `setAttribute` define el comportamiento global de la conexión PDO con la base de datos mediante dos reglas principales:
+* **Manejo de errores (`PDO::ATTR_ERRMODE`, `PDO::ERRMODE_EXCEPTION`):** Configura a PDO para que lance excepciones (`PDOException`) cada vez que ocurra un fallo en la conexión o en una consulta SQL. Esto permite capturar los errores de forma controlada usando bloques `try-catch` en lugar de mostrar advertencias genéricas en pantalla.
+* **Modo de lectura por defecto (`PDO::ATTR_DEFAULT_FETCH_MODE`, `PDO::FETCH_ASSOC`):** Establece que todas las consultas devuelvan los resultados automáticamente como **arrays asociativos** (indexados por el nombre de cada columna), evitando tener que especificar `PDO::FETCH_ASSOC` manualmente cada vez que se ejecuta un `fetch()` o `fetchAll()`.
 * **`PDO::FETCH_ASSOC`:** Modo de extracción que le indica a PDO que devuelva los resultados de la consulta como un **array asociativo**, utilizando los nombres de las columnas de la tabla como claves.
 * **`ATTR_ERRMODE => ERRMODE_EXCEPTION`**: Le indica a PDO que si una consulta SQL falla (por ejemplo, por un error de sintaxis o una tabla inexistente), lance una **excepción** en lugar de fallar en silencio. Esto facilita mucho encontrar y corregir errores durante el desarrollo.
 * **`ATTR_DEFAULT_FETCH_MODE => FETCH_ASSOC`**: Configura que al consultar datos, estos se devuelvan siempre como un arreglo asociativo: `["nombre" => "Juan", "telefono" => "123456"]`, en lugar de duplicar los datos con índices numéricos (`[0 => "Juan", "nombre" => "Juan"]`). Ahorra memoria y hace el código más limpio.
