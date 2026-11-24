@@ -96,14 +96,19 @@ if (is_array($fila)) {
     $error = "El usuario no existe.";
 }
 ```
-1. **Verificación de existencia (`is_array($fila)`):** Comprueba que la consulta haya devuelto un arreglo con los datos del usuario y no un valor booleano `false`. Si el usuario no existe en la base de datos, asigna el mensaje `"El usuario no existe."` a la variable `$error`.
-2. **Validación de contraseña (`password_verify(...)`):** Si el usuario existe, compara la contraseña ingresada con el hash encriptado guardado en la base de datos (`$fila["password"]`). El operador lógico `||` actúa como respaldo por compatibilidad en caso de que existan contraseñas antiguas guardadas en texto plano. Si ninguna coincide, asigna `"Contraseña incorrecta."` a `$error`.
-3. **Creación de sesión (`$_SESSION[...]`):** Al validar las credenciales con éxito, almacena el ID, el nombre y el usuario en las variables globales de sesión del servidor para mantener al usuario autenticado mientras navega por el sistema.
-4. **Redirección y cierre (`header(...)` y `exit()`):** Redirige automáticamente al usuario hacia `index.php` y detiene de inmediato la ejecución del script actual para evitar que se procese código restante.
-* **`password_verify($password, $fila["password"])`**: Verifica si la contraseña escrita coincide con la contraseña encriptada (hash `bcrypt`/`argon2`) en la base de datos.
-* **`|| $password === $fila["password"]`**: Condición de compatibilidad hacia atrás que permite ingresar si la clave fue guardada en texto plano (útil durante pruebas iniciales).
-* Si todo es correcto, se guardan en la memoria del servidor (`$_SESSION`) los datos esenciales del usuario para usarlos en el resto del sistema, y se le envía a `index.php`.
-* Si falla, se asigna el mensaje correspondiente a `$error`.
+### Explicación de la Lógica de Validación de Login
+
+* **`if (is_array($fila))`:** Verifica que la consulta a la base de datos haya encontrado al usuario y devuelto sus datos en forma de arreglo (array). Si devuelve `false`, significa que no hubo coincidencias y salta directamente al bloque `else` final para asignar `"El usuario no existe."`.
+* **`if (password_verify($password, $fila["password"]) || $password === $fila["password"])`:** Valida la contraseña ingresada contra la almacenada en la base de datos:
+  * `password_verify(...)`: Comprueba si la contraseña coincide con un hash encriptado (método seguro).
+  * `|| $password === $fila["password"]`: Condición alternativa (`O`) que verifica coincidencia exacta en texto plano, útil para compatibilidad con registros antiguos sin encriptar.
+* **`$_SESSION["id_usuario"] = $fila["id_usuario"];`:** Guarda el ID único del usuario en la sesión del servidor para identificarlo en todo el sistema.
+* **`$_SESSION["nombre_usuario"] = $fila["nombre"];`:** Almacena el nombre real del usuario en la sesión para mostrarlo en la interfaz (por ejemplo, en mensajes de bienvenida).
+* **`$_SESSION["usuario"] = $fila["usuario"];`:** Guarda el nombre de usuario (login) en la sesión activa.
+* **`header("Location: index.php");`:** Envía una cabecera HTTP al navegador para redirigir automáticamente al usuario hacia la página principal (`index.php`).
+* **`exit();`:** Detiene de inmediato la ejecución del script PHP para asegurar que no se procese ningún código posterior tras la redirección.
+* **`else { $error = "Contraseña incorrecta."; }`:** Se ejecuta si el usuario existe, pero la contraseña no pasó ninguna de las dos validaciones.
+* **`else { $error = "El usuario no existe."; }`:** Se ejecuta cuando `$fila` no es un arreglo, indicando que el usuario ingresado no está registrado en la base de datos.
 
 ---
 
