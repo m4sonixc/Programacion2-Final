@@ -36,10 +36,17 @@ $nombre_bd = "taller_pachi";
 try {
     $conexion = new PDO("mysql:host=$servidor;dbname=$nombre_bd;charset=utf8mb4", $usuario_bd, $password_bd);
 ```
-* **`try { ... }`**: Significa *"intenta ejecutar este bloque"*. Si ocurre algún problema en el camino, no se detendrá todo de golpe, sino que pasará a la sección de captura (`catch`).
-* **`new PDO(...)`**: Crea un nuevo objeto **PDO** (*PHP Data Objects*), el estándar recomendado en PHP para conectarse a bases de datos.
-  * **`charset=utf8mb4`**: Garantiza que el sistema admita tildes, letras como la `ñ` y caracteres especiales o emojis sin que se corrompan los textos.
+Esta sección establece el enlace entre la aplicación PHP y el servidor MySQL de forma controlada:
+* **`PDO` (PHP Data Objects):** Extensión nativa de PHP utilizada para conectarse y operar con bases de datos de forma segura, permitiendo el uso de consultas preparadas para prevenir inyecciones SQL.
 
+* **`try { ... }`:** Inicia un bloque de manejo de excepciones. Intenta ejecutar la conexión y, si ocurre algún fallo (como credenciales erróneas o el servidor caído), permite capturar el error en un bloque `catch` sin exponer datos sensibles en pantalla.
+* **`$conexion = new PDO(...)`:** Crea e instancia un nuevo objeto de conexión usando la extensión **PDO** y lo guarda en la variable `$conexion` para realizar consultas posteriormente.
+* **Cadena de conexión (DSN):**
+  * **`mysql:`** Indica el controlador de base de datos a utilizar (MySQL / MariaDB).
+  * **`host=$servidor`:** Define la dirección del servidor donde se aloja la base de datos (por ejemplo, `localhost`).
+  * **`dbname=$nombre_bd`:** Especifica el nombre exacto de la base de datos a la que se conectará el sistema.
+  * **`charset=utf8mb4`:** Configura la codificación de caracteres para soportar correctamente tildes, la letra `ñ` y caracteres especiales sin errores de formato.
+* **`$usuario_bd` y `$password_bd`:** Credenciales de acceso del usuario autorizado para operar sobre esa base de datos.
 ---
 
 ### 3. Ajustes de Seguridad y Comodidad
@@ -47,6 +54,7 @@ try {
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $conexion->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 ```
+* **`PDO::FETCH_ASSOC`:** Modo de extracción que le indica a PDO que devuelva los resultados de la consulta como un **array asociativo**, utilizando los nombres de las columnas de la tabla como claves.
 * **`ATTR_ERRMODE => ERRMODE_EXCEPTION`**: Le indica a PDO que si una consulta SQL falla (por ejemplo, por un error de sintaxis o una tabla inexistente), lance una **excepción** en lugar de fallar en silencio. Esto facilita mucho encontrar y corregir errores durante el desarrollo.
 * **`ATTR_DEFAULT_FETCH_MODE => FETCH_ASSOC`**: Configura que al consultar datos, estos se devuelvan siempre como un arreglo asociativo: `["nombre" => "Juan", "telefono" => "123456"]`, en lugar de duplicar los datos con índices numéricos (`[0 => "Juan", "nombre" => "Juan"]`). Ahorra memoria y hace el código más limpio.
 
